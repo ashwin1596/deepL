@@ -1,4 +1,4 @@
-import deeplearning as dl
+import deepl as dl
 
 config = dl.Config.get_instance()
 

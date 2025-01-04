@@ -1,4 +1,4 @@
-import deeplearning as dl
+import deepl as dl
 import numpy as np
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader

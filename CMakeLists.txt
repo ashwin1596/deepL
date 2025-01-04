@@ -18,8 +18,8 @@ set(CMAKE_CXX_STANDARD 17)
 # Make sure CUDA can find its headers
 include_directories("/usr/local/cuda/include")  # Add this line
 
-set(PYTHON_MODULE_NAME deeplearning)
-set(CPP_LIBRARY_NAME deeplearning_cpp)
+set(PYTHON_MODULE_NAME deepl)
+set(CPP_LIBRARY_NAME deepl_cpp)
 set(CUDA_SOURCES src/tensor.cu)
 set(CPP_SOURCES src/Graph.cpp src/Layer.cpp src/Loss.cpp src/Optimizer.cpp src/Utils.cpp src/GradMode.cpp)
 

@@ -1,4 +1,4 @@
-import deeplearning as dl
+import deepl as dl
 import numpy as np
 
 config = dl.Config.get_instance()
@@ -21,18 +21,6 @@ def test_tensor_transpose():
     input_node = builder.createVariable("input", transposed_tensor)
 
     input_node.value().print()
-    # transposed_tensor.print()
-
-    # print("Original Tensor:")
-    # print(f"Dimensions: {original_tensor.get_dims()}")
-    # print(f"Data: {original_tensor.get_data()}")
-
-    # # # Perform transpose
-    # # transposed_tensor = original_tensor.transpose()
-
-    # print("\nTransposed Tensor:")
-    # print(f"Dimensions: {transposed_tensor.get_dims()}")
-    # print(f"Data: {transposed_tensor.get_data()}")
 
 if __name__ == "__main__":
     test_tensor_transpose()

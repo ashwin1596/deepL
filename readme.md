@@ -1,5 +1,8 @@
 # deepL
 
+## Overview
+deepL is a custom deep learning framework designed for efficient graph optimization and reverse-mode autodifferentiation. The framework provides foundational tools for building and training neural networks with both Python and C++ bindings, enabling flexibility and performance for machine learning tasks.
+
 ## Quick Start
 ```bash
 # Clone the repository
@@ -79,11 +82,11 @@ export PYTHONPATH="${PWD}/build:${PYTHONPATH}"
 
 ### Simple Neural Network
 ```python
-import deepl as dl  # Changed import to match convention
+import deepl as dl
 import numpy as np
 
 # Create input and target data
-input_data = np.random.randn(10, 2).astype(np.float32)  # Added missing data setup
+input_data = np.random.randn(10, 2).astype(np.float32)
 target_data = np.random.randn(10, 1).astype(np.float32)
 
 # Create input and target nodes
@@ -98,7 +101,7 @@ model.add_layer(dl.ReLU(builder))
 model.add_layer(dl.Linear(4, 1, builder))
 
 # Create loss function
-loss_fn = dl.CrossEntropyLoss(builder)  # Added missing loss function
+loss_fn = dl.CrossEntropyLoss(builder)
 
 # Create optimizer
 parameters = model.parameters()
@@ -121,7 +124,7 @@ for epoch in range(10):
 ```cpp
 #include <deepl/core/tensor.cuh>
 #include <deepl/layers/sequential.h>
-#include <deepl/builder/graph_builder.h>  // Added missing header
+#include <deepl/builder/graph_builder.h>
 
 int main() {
     // Create model
@@ -134,9 +137,6 @@ int main() {
     return 0;
 }
 ```
-
-## Overview
-deepL is a custom deep learning framework designed for efficient graph optimization and reverse-mode autodifferentiation. The framework provides foundational tools for building and training neural networks with both Python and C++ bindings, enabling flexibility and performance for machine learning tasks.
 
 ---
 
@@ -219,7 +219,7 @@ Here is a simple example of building and training a neural network using DeepL:
 
 ### Python:
 ```python
-import deeplearning as dl
+import deepl as dl
 import numpy as np
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
