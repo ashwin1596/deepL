@@ -1,26 +1,142 @@
 # deepL
 
-## Overview
-DeepL is a custom deep learning framework designed for efficient graph optimization and reverse-mode autodifferentiation. The framework provides foundational tools for building and training neural networks with both Python and C++ bindings, enabling flexibility and performance for machine learning tasks.
+## Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/ashwin1596/deepL.git
+cd deepL
 
----
+# Setup environment
+conda env create -f environment.yml
+conda activate deepl
+
+# Build the library
+bash scripts/build.sh
+
+# Set Python path
+export PYTHONPATH="${PWD}/build:${PYTHONPATH}"
+
+# Run example
+python examples/python/mnist_classifier.py
+```
+
+## Prerequisites
+- Python 3.8 or higher
+- CUDA Toolkit 11.0 or higher
+- CMake 3.15 or higher
+- C++17 compatible compiler
+- GPU with compute capability 6.0 or higher(for faster computation), if not CPU mode can be used
+- Required Python packages:
+  - NumPy
+  - PyBind11
+  - PyTorch (for examples)
+  - torchvision (for MNIST example)
 
 ## Key Features
-1. Deep Learning Framework with Automatic Differentiation using Reverse AutoGrad.
-2. High-Level Architecture:
-   - Includes support for training and inference.
-   - Forward and backward pass for each iteration.
-   - Loss is calculated at the end of each iteration.
-   - Gradients are calculated during the backward propagation using the chain rule.
-   - Optimizer updates all the parameters based on the calculated gradients.
+- Deep Learning Framework with Automatic Differentiation using Reverse AutoGrad
+- High-Performance Tensor Operations on both CPU and GPU
+- Dynamic Computational Graph
+- Python and C++ APIs
+- CUDA-accelerated computations
+- Built-in Components:
+  - Optimizers: SGD
+  - Layers: Sequential, Linear, ReLU
+  - Loss Functions: Cross Entropy Loss
+  - Automatic Differentiation Engine
 
-3. High-Level Components:
-   - **Tensors**
-   - **Computational Graph**
-   - **Optimizers**: SGD
-   - **Reverse AutoGrad**
-   - **Layers**: Sequential, Linear, and ReLU
-   - **Loss Functions**: Cross Entropy Loss
+## Installation
+
+### Building from Source
+1. **Clone the Repository**:
+```bash
+git clone https://github.com/ashwin1596/deepL.git
+cd deepL
+```
+
+2. **Create Conda Environment**:
+```bash
+conda env create -f environment.yml
+conda activate deepl
+```
+
+3. **Build the Library**:
+```bash
+bash scripts/build.sh
+```
+
+4. **Set Python Path**:
+```bash
+export PYTHONPATH="${PWD}/build:${PYTHONPATH}"
+```
+
+### Common Installation Issues
+- **CUDA Not Found**: Verify CUDA installation and ensure `CUDA_HOME` is set correctly
+- **Build Fails**: Check compiler compatibility and CMake version
+- **Import Errors**: Verify `PYTHONPATH` is set correctly
+- **Missing Dependencies**: Ensure all required packages are installed via conda/pip
+
+## Usage Examples
+
+### Simple Neural Network
+```python
+import deepl as dl  # Changed import to match convention
+import numpy as np
+
+# Create input and target data
+input_data = np.random.randn(10, 2).astype(np.float32)  # Added missing data setup
+target_data = np.random.randn(10, 1).astype(np.float32)
+
+# Create input and target nodes
+input_node = dl.Tensor(input_data)
+target_node = dl.Tensor(target_data)
+
+# Create model
+builder = dl.GraphBuilder()
+model = dl.Sequential(builder)
+model.add_layer(dl.Linear(2, 4, builder))
+model.add_layer(dl.ReLU(builder))
+model.add_layer(dl.Linear(4, 1, builder))
+
+# Create loss function
+loss_fn = dl.CrossEntropyLoss(builder)  # Added missing loss function
+
+# Create optimizer
+parameters = model.parameters()
+optimizer = dl.SGD(parameters, learning_rate=0.01)
+
+# Training loop
+for epoch in range(10):
+    optimizer.zero_grad()
+    
+    # Forward pass
+    outputs = model.forward(input_node)
+    loss = loss_fn.forward(outputs, target_node)
+    
+    # Backward pass
+    builder.backward(loss)
+    optimizer.step()
+```
+
+### Using C++ API
+```cpp
+#include <deepl/core/tensor.cuh>
+#include <deepl/layers/sequential.h>
+#include <deepl/builder/graph_builder.h>  // Added missing header
+
+int main() {
+    // Create model
+    auto builder = GraphBuilder();
+    auto model = Sequential(builder);
+    model.add_layer(Linear(784, 128, builder));
+    model.add_layer(ReLU(builder));
+    model.add_layer(Linear(128, 10, builder));
+    
+    return 0;
+}
+```
+
+## Overview
+deepL is a custom deep learning framework designed for efficient graph optimization and reverse-mode autodifferentiation. The framework provides foundational tools for building and training neural networks with both Python and C++ bindings, enabling flexibility and performance for machine learning tasks.
 
 ---
 
@@ -29,7 +145,7 @@ The project is organized into several components:
 
 - **bindings/python**: Python bindings for easy integration with Python-based workflows.
 - **docs**: Documentation for the library and examples.
-- **examples**: Python-based examples demonstrating usage of the library.
+- **examples**: Python and C++ based examples demonstrating usage of the library.
 - **include/deepl**: Header files defining core components, layers, loss functions, optimizers, and utilities.
 - **src**: Source files implementing the core functionality.
 - **scripts**: Scripts for building and maintaining the project.
@@ -51,7 +167,7 @@ export PYTHONPATH=$(pwd)/build:$PYTHONPATH
 
 To use the library you can import it as `import deeplearning`, see mnist_classifier.py.
 
-### C++
+### C++(CUDA)
 To use the library for C++ code, link the necessary libraries as below.
 
 ```bash
@@ -127,7 +243,6 @@ num_classes = 10
 # Download and transform the MNIST dataset
 train_dataset = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
 test_dataset = datasets.MNIST(root='./data', train=False, transform=transform, download=True)
-
 
 # Create data loaders
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -224,30 +339,12 @@ deepL\
 
 ---
 
-## Dependencies
-The project requires the following dependencies:
-- **Python**:
-  - NumPy
-  - Pybind11
-  - CMake (for building bindings)
-- **C++**:
-  - CUDA Toolkit (for GPU acceleration)
-  - Eigen (optional for matrix operations)
-  - CMake
-
-Install dependencies using:
-```bash
-conda env create -f dependencies.yml
-```
-
----
-
 ## Task List
 - [x] Implement Tensor class and operations.
 - [x] Add Python bindings.
 - [x] Create example neural networks.
 - [x] Expand documentation.
 - [x] Optimize GPU implementations.
-- [ ] Add more loss functions and optimizers.
+- [x] Add loss functions and optimizers.
 
 ---
