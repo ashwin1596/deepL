@@ -5,6 +5,27 @@ DeepL is a custom deep learning framework designed for efficient graph optimizat
 
 ---
 
+## Key Features
+1. Deep Learning Framework with Automatic Differentiation using Reverse AutoGrad.
+2. High-Level Architecture:
+   - Includes support for training and inference.
+   - Forward and backward pass for each iteration.
+   - Loss is calculated at the end of each iteration.
+   - Gradients are calculated during the backward propagation using the chain rule.
+   - Optimizer updates all the parameters based on the calculated gradients.
+
+3. High-Level Components:
+   - **Tensors**
+   - **Computational Graph**
+   - **Optimizers**: SGD
+   - **Reverse AutoGrad**
+   - **Dataset**
+   - **DataLoader**
+   - **Layers**: Sequential, Linear, and ReLU
+   - **Loss Functions**: Cross Entropy Loss
+
+---
+
 ## Library Structure
 The project is organized into several components:
 
@@ -41,6 +62,24 @@ To build the C++ project:
    mkdir -p out/build && cd out/build
    cmake ../.. && cmake --build .
    ```
+
+---
+
+## Implementation Details
+### Tensors
+- Tensors are used as storage objects.
+- Tensors can store data on both CPU and GPU devices, depending on the selected device.
+- Support for low-level operations:
+  - `reshape`, `add`, `elementwise_multiply`, `matmul`, `transpose`, `divide`, `exp`, `binaralize`, `neg`, `log`.
+- Support for advanced operations:
+  - `sumAlongAxis`, `softmax`, `batchMatmul`.
+- All operations are supported on both GPU and CPU devices.
+
+### Computational Graph
+- Consists of graph nodes for storing data during the forward pass and adjoints during the backward pass.
+- Provides wrappers for all tensor operations.
+- Adjoint nodes store adjoint values and dependent nodes along with their partial derivatives.
+- During the backward pass, each adjoint node processes the gradient in topological order, propagating the gradients backward.
 
 ---
 
@@ -95,6 +134,15 @@ for batch in data_loader:
     loss.backward()
     optimizer.step()
 ```
+
+---
+
+## Execution Details
+### C++
+- Compile the code by executing the batch script `compile.sh`.
+- Setup the environment details such as `batch_size`, `num_epochs`, `device_type`, and `available_devices` in `run.sh`.
+- Run the executable using `run.sh`.
+- Define the training/testing model in the `main.cpp` file.
 
 ---
 
