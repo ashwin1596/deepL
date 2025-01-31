@@ -1,7 +1,22 @@
-# deepL
+# DeepL: Efficient Neural Network Framework
 
-## Overview
-deepL is a custom deep learning framework designed for efficient graph optimization and reverse-mode autodifferentiation. The framework provides foundational tools for building and training neural networks with both Python and C++ bindings, enabling flexibility and performance for machine learning tasks.
+A high-performance deep learning framework specifically designed to solve complex graph optimization challenges in machine learning, enabling researchers and developers to build more efficient and precise neural network models.
+
+## Problem Solved
+
+Scientific and industrial machine learning projects often struggle with computational inefficiency and limited flexibility when handling complex neural network architectures. This framework addresses these challenges by providing a unified solution that bridges performance and adaptability.
+
+## Key Features
+- Deep Learning Framework with Automatic Differentiation using Reverse AutoGrad
+- High-Performance Tensor Operations on both CPU and GPU
+- Dynamic Computational Graph
+- Python and C++ APIs
+- CUDA-accelerated computations
+- Built-in Components:
+  - Optimizers: SGD
+  - Layers: Sequential, Linear, ReLU
+  - Loss Functions: Cross Entropy Loss
+  - Automatic Differentiation Engine
 
 ## Quick Start
 ```bash
@@ -34,18 +49,6 @@ python examples/python/mnist_classifier.py
   - PyBind11
   - PyTorch (for examples)
   - torchvision (for MNIST example)
-
-## Key Features
-- Deep Learning Framework with Automatic Differentiation using Reverse AutoGrad
-- High-Performance Tensor Operations on both CPU and GPU
-- Dynamic Computational Graph
-- Python and C++ APIs
-- CUDA-accelerated computations
-- Built-in Components:
-  - Optimizers: SGD
-  - Layers: Sequential, Linear, ReLU
-  - Loss Functions: Cross Entropy Loss
-  - Automatic Differentiation Engine
 
 ## Installation
 
