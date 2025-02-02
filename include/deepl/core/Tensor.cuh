@@ -79,7 +79,7 @@ public:
     std::shared_ptr<std::vector<float>> data;
     std::shared_ptr<std::vector<size_t>> dims;
 
-	// GPU data
+    // GPU data
     std::shared_ptr<float> d_data = nullptr;
     std::shared_ptr<size_t> d_dims = nullptr;
 	size_t total_elements = 1;
@@ -100,13 +100,11 @@ public:
         dims = std::move(other.dims);
         d_data = other.d_data;
         d_dims = other.d_dims;
-        // d_data = std::move(other.d_data);
-        // d_dims = std::move(other.d_dims);
         total_elements = other.total_elements;
         gpu_allocated_data = other.gpu_allocated_data;
         gpu_allocated_dims = other.gpu_allocated_dims;
         device_ = other.device_;
-		requires_grad_ = other.requires_grad_;
+	requires_grad_ = other.requires_grad_;
 
         // Prevent float-free by nulling out the moved object
         other.d_data = nullptr;
@@ -124,15 +122,13 @@ public:
             // Move contents
             data = std::move(other.data);
             dims = std::move(other.dims);
-			d_data = other.d_data;
-			d_dims = other.d_dims;
-			// d_data = std::move(other.d_data);
-			// d_dims = std::move(other.d_dims);
+	    d_data = other.d_data;
+	    d_dims = other.d_dims;
             total_elements = other.total_elements;
             gpu_allocated_data = other.gpu_allocated_data;
             gpu_allocated_dims = other.gpu_allocated_dims;
             device_ = other.device_;
-			requires_grad_ = other.requires_grad_;
+	    requires_grad_ = other.requires_grad_;
 
             // Prevent float-free
             other.d_data = nullptr;
@@ -152,10 +148,10 @@ public:
 
     // Destructor
     ~Tensor() {
-        if (gpu_allocated_data || gpu_allocated_dims) {
-            freeGPUMemory();
-        }
-    }
+	        if (gpu_allocated_data || gpu_allocated_dims) {
+	            freeGPUMemory();
+	        }
+    	}
 
 	// Allocate and Free GPU memory
 	void allocateGPUMemory();
