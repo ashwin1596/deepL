@@ -40,7 +40,6 @@ Linear::Linear(size_t in_features, size_t out_features, GraphBuilder &builder, i
 
 	std::mt19937 gen(rd());
 
-	//TODO : check this initialization
 	std::normal_distribution<float> dist(0.0, std::sqrt(2.0 / in_features));
 
 	auto weight_data = std::make_shared<Tensor>(std::vector<size_t>{out_features, in_features}, true);
