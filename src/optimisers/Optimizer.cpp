@@ -12,16 +12,8 @@
 			auto grad = param->adjoint()->get_adjoint();
 			auto current_value = param->value();
 				
-			// std::cout << "current_value: ";
-			// current_value->print();
-			// std::cout << std::endl;
-
 			// Update parameter
 			TensorPtr new_value = current_value->subtract(grad->mult(learning_rate_));
-
-			// std::cout << "new_value: ";
-			// new_value->print();
-			// std::cout << std::endl;
 
 			param->setValue(new_value);
 		}
