@@ -52,23 +52,8 @@ bool AdjointNode::needs_red_sum() const { return needs_reduction_; }
 
 // Process this node's gradient using stored partial derivatives
 void AdjointNode::processGradient() {
-	// std::cout << "\nProcessing Gradient for Node: " << name_ << " (Op: " << opTypeToString(op_type_) << ")" <<
-	// 		std::endl;
-	// std::cout << "Upstream gradient (adjoint_value_) shape: " << adjoint_value_->dims << std::endl;
-	// std::cout << "adjoint_value: ";
-	// adjoint_value_->print();
-	// std::cout << std::endl;
-
 
     for (const auto &[dep, partial] : dependencies_) {
-		// std::cout << "\nProcessing dependency: " << dep->name() << std::endl;
-		// std::cout << "Current accumulated gradient shape: " << dep->adjoint_value_->dims << std::endl;
-		// std::cout << "Partial derivative shape: " << partial->dims << std::endl;
-		// std::cout << "Partial derivative value: ";
-		// partial->print();
-		// std::cout << std::endl;
-
-
         TensorPtr result;
         TensorPtr result_re;
         TensorPtr result_sf;
@@ -79,29 +64,19 @@ void AdjointNode::processGradient() {
         switch (op_type_) {
             case OpType::MATMUL:
                 if (adjoint_value_->dims->size() == 0) {
-					// std::cout << "Scalar adjoint case (softmax)" << std::endl;
                     result = partial->elementwise_mult(adjoint_value_);
                     dep->adjoint_value_ = dep->adjoint_value_->add(result);
                 } else if (dep->name().find("left") != std::string::npos) {
-					// std::cout << "Left matrix gradient case" << std::endl;
                     result = adjoint_value_->matmul(partial);
                     dep->adjoint_value_ = dep->adjoint_value_->add(result);
                 } else {
-					// std::cout << "Right matrix gradient case" << std::endl;
                     result = partial->matmul(adjoint_value_);
                     dep->adjoint_value_ = dep->adjoint_value_->add(result);
                 }
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::ADD:
             case OpType::SUM:
-				// std::cout << "Add/Sum gradient case" << std::endl;
                 result = adjoint_value_->elementwise_mult(partial);
 
                 if (dep->needs_red_sum()) {
@@ -110,136 +85,54 @@ void AdjointNode::processGradient() {
 
                 }
 
-				// std::cout << "partial: ";
-				// partial->print(); 
-                // std::cout << std::endl;
-
-				// std::cout << "partial: ";
-				// partial->print(); 
-                //   std::cout << std::endl;
-
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
-			case OpType::CROSSENTROPY:
+		case OpType::CROSSENTROPY:
                 // Handle cross-entropy gradients
                 result = adjoint_value_->elementwise_mult(partial);
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
                 break;
             
             case OpType::SUBTRACT:
-				// std::cout << "Subtract gradient case" << std::endl;
                 dep->adjoint_value_ = dep->adjoint_value_->add(adjoint_value_->elementwise_mult(partial));
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::ELEMENTWISE_MULTIPLY:
-				// std::cout << "Elementwise multiplication gradient case" << std::endl;
                 result = adjoint_value_->elementwise_mult(partial);
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::RELU:
-				// std::cout << "Relu gradient case" << std::endl;
                 result_re = adjoint_value_->elementwise_mult(partial);
                 dep->adjoint_value_ = dep->adjoint_value_->add(result_re);
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::LN:
-				// std::cout << "Ln gradient case" << std::endl;
                 dep->adjoint_value_ = dep->adjoint_value_->add(
                     adjoint_value_->elementwise_mult(partial)
                 );
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::SIN:
                 dep->adjoint_value_ = dep->adjoint_value_->add(
                     adjoint_value_->elementwise_mult(partial)
                 );
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::DIVIDE:
-				// std::cout << "Divide gradient case" << std::endl;
-				
-				// std::cout << "Before - partial: ";
-				// partial->print(); 
-                // std::cout << std::endl;
-
                 result = adjoint_value_->elementwise_mult(partial);
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
-
-				// std::cout << "After gradient computation for " << dep->name() 
-                //   << ", result: " << result->data 
-                //   << std::endl;
-
-				// std::cout << "After - partial: ";
-				// partial->print(); 
-                // std::cout << std::endl;
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::TRANSPOSE:
-				// std::cout << "Transpose gradient case" << std::endl;
                 result = adjoint_value_->transpose();
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             case OpType::REDUCED_SUM:
-				// std::cout << "Reduced sum gradient case" << std::endl;
                 result = partial->elementwise_mult(adjoint_value_);
                 dep->adjoint_value_ = dep->adjoint_value_->add(result);
-
-				//  std::cout << "After gradient computation for " << dep->name() 
-                //   << ", adjoint_value_: ";
-				//   dep->adjoint_value_->print(); 
-                //   std::cout << std::endl;
-
                 break;
 
             default:
@@ -411,9 +304,7 @@ NodePtr GraphBuilder::createCrossEntropyNode(NodePtr a, NodePtr b, const std::st
 
 		// Compute softmax of 'a' for gradient calculation
 		TensorPtr softmax = a->value()->softmax(0);
-		// std::cout<<"softmax---"<<std::endl;
-		// softmax->print();
-
+		
 		// Partial derivatives
 		TensorPtr grad_a = softmax->subtract(b->value()); // ∂L/∂a = softmax(a) - b
 		TensorPtr grad_b = softmax->ln()->mult(-1);    // ∂L/∂b = -log(softmax(a))
@@ -444,9 +335,6 @@ NodePtr GraphBuilder::createLnNode(NodePtr a, const std::string& name) {
 	if (needs_grad) {
 		auto adjoint = std::make_shared<AdjointNode>(name + "_bar", OpType::LN, node);
 		node->setAdjoint(adjoint);
-
-		// std::cout<<"LN partial derivative";
-		// a->value()->reciprocal()->print();
 
 		adjoint->addDependency(a->adjoint(), a->value()->reciprocal());
 
@@ -511,10 +399,6 @@ NodePtr GraphBuilder::createSumNode(NodePtr a, const std::string& name) {
 		node->setAdjoint(adjoint);
 
 		auto gradient = Tensor::ones(*a->value()->dims);
-
-		// std::cout << "CreateSumNode grad: ";
-		// gradient->print(); 
-		// std::cout << std::endl;
 
 		adjoint->addDependency(a->adjoint(), gradient);
 
@@ -584,10 +468,6 @@ NodePtr GraphBuilder::createSumAlongDimensionNode(NodePtr a, int axis, const std
 
 		adjoint->addDependency(a->adjoint(), grad);
 
-		// 		std::cout << "grad: ";
-		// grad->print(); 
-		//   std::cout << std::endl;
-
 		graph_->addNode(adjoint);
 	}
 	return node;
@@ -612,7 +492,6 @@ NodePtr GraphBuilder::createDivideNode(NodePtr a, NodePtr b, const std::string& 
 		// dz/db = -a/b^2
 
 		// Add dependencies for adjoints
-
 		if (a->value()->requires_grad()) {
 			// Gradient with respect to a: grad_output * (1/b)
 			auto grad_a = std::make_shared<Tensor>(1.0f, true)->divide(b->value());
