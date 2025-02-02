@@ -85,8 +85,6 @@ PYBIND11_MODULE(deeplearning, m) {
 	py::class_<Layer, std::shared_ptr<Layer>>(m, "Layer")
 		.def("forward", &Layer::forward, py::arg("input"))
 		.def("parameters", &Layer::parameters)
-		//.def("save_parameters", &Layer::saveParameters, py::arg("json_data"))
-		//.def("load_parameters", &Layer::loadParameters, py::arg("json_data"))
 		.def("get_layer_type", &Layer::getLayerType)
 		.def_readwrite("layer_num", &Layer::layer_num_);
 
@@ -95,16 +93,12 @@ PYBIND11_MODULE(deeplearning, m) {
 			 py::arg("in_features"), py::arg("out_features"), py::arg("builder"), py::arg("layer_num"))
 		.def("forward", &Linear::forward, py::arg("input"))
 		.def("parameters", &Linear::parameters)
-		//.def("save_parameters", &Linear::saveParameters, py::arg("json_data"))
-		//.def("load_parameters", &Linear::loadParameters, py::arg("json_data"))
 		.def("get_layer_type", &Linear::getLayerType);
 
 	py::class_<ReLU, Layer, std::shared_ptr<ReLU>>(m, "ReLU")
 	.def(py::init<GraphBuilder&, int>(), py::arg("builder"), py::arg("layer_num"))
 	.def("forward", &ReLU::forward, py::arg("input"))
 	.def("parameters", &ReLU::parameters)
-	//.def("save_parameters", &ReLU::saveParameters, py::arg("json_data"))
-	//.def("load_parameters", &ReLU::loadParameters, py::arg("json_data"))
 	.def("get_layer_type", &ReLU::getLayerType);
 
 	py::class_<Sequential, std::shared_ptr<Sequential>>(m, "Sequential")
@@ -112,8 +106,6 @@ PYBIND11_MODULE(deeplearning, m) {
 		.def("add_layer", &Sequential::addLayer, py::arg("layer"))
 		.def("forward", &Sequential::forward, py::arg("input"))
 		.def("parameters", &Sequential::parameters);
-	//.def("save_model", &Sequential::saveModel, py::arg("filepath"))
-	//.def("load_model", &Sequential::loadModel, py::arg("filepath"));
 
 		py::class_<Node, std::shared_ptr<Node>>(m, "Node")
 		.def(py::init<const std::string&, OpType, TensorPtr>())
