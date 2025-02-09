@@ -1,4 +1,4 @@
-# DeepL: Efficient Neural Network Framework
+# DeepL: Efficient Deep Learning Framework
 
 A high-performance deep learning framework specifically designed to solve complex graph optimization challenges in machine learning, enabling researchers and developers to build more efficient and precise neural network models.
 
