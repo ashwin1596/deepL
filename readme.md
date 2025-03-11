@@ -18,6 +18,16 @@ Scientific and industrial machine learning projects often struggle with computat
   - Loss Functions: Cross Entropy Loss
   - Automatic Differentiation Engine
 
+## Implementation Highlights
+- Designed and implemented a custom deep learning framework with reverse-mode auto-differentiation, supporting
+ efficient computation graphs for backpropagation in neural networks.
+- Optimized tensor operations on CPU and GPU by implementing parallelized matrix operations, fused kernels, and
+ CUDA-based execution, improving computational efficiency.
+- Developed a Python-C++ bridge using Pybind11, enabling seamless interaction between high-level Python API and
+ low-level C++ core for efficient model execution.
+- Implemented dynamic memory management and optimized data structures for tensor storage and operations, reduc
+ing memory fragmentation and improving runtime performance.
+
 ## Quick Start
 ```bash
 # Clone the repository
